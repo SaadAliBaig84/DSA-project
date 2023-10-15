@@ -1,0 +1,249 @@
+use sakila;
+create table worker(
+wid int primary key ,
+fname Char,
+lname char,
+salary Int,
+jdate datetime,
+dep char
+);
+
+insert into worker values
+(001,	'Monika'	,'Arora'	,100000	,'2014-02-20 09:00:00',	'HR'),
+(002,	'Niharika','Verma',	80000,	'2014-06-11 09:00:00'	,'Admin'),
+(003	,'Vishal',	'Singhal',	300000	,'2014-02-20 09:00:00'	,'HR'),
+(004	,'Amitabh'	,'Singh',	500000	,'2014-02-20 09:00:00'	,'Admin'),
+(005	,'Vivek',	'Bhati',	500000,	'2014-06-11 09:00:00'	,'Admin'),
+(006	,'Vipul'	,'Diwan',	200000,	'2014-06-11 09:00:00',	'Account'),
+(007	,'Satish',	'Kumar',	75000,	'2014-01-20 09:00:00',	'Account'),
+(008	,'Geetika'	,'Chauhan',	90000,	'2014-04-11 09:00:00',	'Admin');
+
+-- select *
+-- from worker;
+
+
+-- create table bonus(
+-- wrid int not null,
+-- bdate datetime not null,
+-- bamount int not null,
+-- foreign key (wrid) references worker(wid) on delete cascade
+-- );
+
+-- insert into bonus values
+-- (1	,'2016-02-20 00:00:00'	,5000),
+-- (2,	'2016-06-11 00:00:00',	3000),
+-- (3	,'2016-02-20 00:00:00'	,4000),
+-- (1	,'2016-02-20 00:00:00',	4500),
+-- (2	,'2016-06-11 00:00:00',	3500);
+
+-- create table title(
+-- wrid int not null,
+-- wtitle char(20) not null,
+-- affected_from datetime not null,
+-- foreign key (wrid) references worker(wid) on delete cascade
+-- );
+-- insert into title values
+-- (1, 'Manager'	,'2016-02-20 00:00:00'),
+-- (2	,'Executive',	'2016-06-11 00:00:00'),
+-- (8	,'Executive',	'2016-06-11 00:00:00'),
+-- (5	,'Manager',	'2016-06-11 00:00:00'),
+-- (4	,'Asst. Manager',	'2016-06-11 00:00:00'),
+-- (7	,'Executive',	'2016-06-11 00:00:00'),
+-- (6	,'Lead',	'2016-06-11 00:00:00'),
+-- (3	,'Lead',	'2016-06-11 00:00:00');
+
+-- select * from title; 
+
+
+
+
+
+
+
+use sakila;
+select upper(fname)
+from worker;
+
+select distinct dep
+from worker;
+
+select substring(fname,1,3)
+from worker;
+
+select instr(fname,binary'a') from worker where fname='amitabh'; 
+
+select distinct length(dep),dep
+from worker;
+
+select replace(fname,'a','A') from worker;
+
+select concat(fname,' ', lname) as complete_name  from worker;
+
+select *
+from worker
+order by fname asc;
+
+select *
+from worker
+order by fname asc,dep desc;
+
+select *
+from worker
+where fname in ('vipul','satish');
+
+select *
+from worker
+where fname not in ('vipul','satish');
+
+select *
+from worker
+where dep='admin';
+
+select *
+from worker
+where dep like 'admin';
+
+select *
+from worker
+where fname like '%a%';
+
+select *
+from worker
+where fname like '_____h';
+
+select *
+from worker
+where fname between 'a' and 'n';
+
+select *
+from worker
+where jdate like '2014-02%';
+
+select count(*) as counter
+from worker
+where dep='admin';
+
+select concat(fname,' ', lname) as identity
+from worker
+where salary between  50000 and 100000 ; 
+
+select concat(fname,' ', lname) as identity
+from worker
+where wid in
+(
+select wid from worker where salary between 50000 and 100000
+);
+
+select dep as department, count(*) as quantity
+from worker
+group by dep
+order by count(dep) desc; 
+
+select *
+from worker
+where wid in
+(
+select wrid
+from title
+where wtitle like 'manager'
+);
+
+select wtitle, affected_from,count(*)
+from title
+group by wtitle,affected_from
+having count(*)>1;
+
+select *
+from worker
+where mod(wid,2) <> 0;
+
+select *
+from worker
+where mod(wid,2) = 0;
+
+create table workerclone like worker;
+
+select curdate();
+select now();
+
+select *
+from worker
+limit 5;
+
+select distinct concat(salary,w.fname) as wow
+from worker
+order by salary desc
+limit 0,3;
+
+select distinct w.fname
+from worker w,worker w1
+where w.salary=w1.salary
+and w.wid!=w1.wid; 
+
+select max(salary)
+from worker
+where salary not in (select max(salary) from worker);
+
+select *
+from worker
+where wid<=(select count(*)/2 from worker);
+
+select distinct  dep as department, count(dep) as counter
+from worker
+group by dep
+having count(dep)<5;
+
+select distinct dep as departments , count(dep) as number_of_people
+from worker
+group by dep;
+
+select *
+from worker
+where wid=(select max(wid) from worker);
+
+select *
+from worker
+where wid=(select min(wid) from worker);
+
+select distinct worker.fname,worker.dep
+from worker
+where salary=(select max(salary) from worker); 
+
+select distinct salary
+from worker
+order by salary desc
+limit 0,3;
+
+select distinct salary
+from worker
+order by salary asc
+limit 0,3;
+
+select dep, sum(salary)
+from worker
+group by dep;
+
+select fname,salary
+from worker
+where salary=(select max(salary) from worker);
+
+
+
+
+
+use sakila;
+
+alter table worker add numbers int auto_increment;
+select *
+from worker;
+
+select *
+from worker;
+update worker set numbers=1 where wid=1;
+
+select *
+from worker
+right join bonus on 
+worker.wid=bonus.wrid; 
+
+alter table worker drop numbers;
